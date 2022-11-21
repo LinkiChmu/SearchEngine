@@ -31,6 +31,7 @@ public class SearchServer {
 
                     List<PageEntry> response = engine.search(request);
                     System.out.println(response);
+
                     out.println(GSON.toJson(response));
                 }
             }
