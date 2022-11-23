@@ -9,7 +9,7 @@ import java.util.*;
 public class BooleanSearchEngine implements SearchEngine {
     private int size = 7_000;
     private static final int HASH_FACTOR = 2;
-    private Map<String, List<PageEntry>> indexation = new HashMap<>(size * HASH_FACTOR);
+    private Map<String, List<PageEntry>> indexingResult = new HashMap<>(size * HASH_FACTOR);
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         if (pdfsDir.isDirectory()) {
@@ -22,7 +22,7 @@ public class BooleanSearchEngine implements SearchEngine {
                         var words = PdfTextExtractor.getTextFromPage(doc.getPage(i)).split("(?U)\\W+");
                         var freqs = countWordsFrequencyOnPage(words);
                         for (var entry : freqs.entrySet()) {
-                            addWordToIndexation(entry, pdfName, i);
+                            recordWordToIndexing(entry, pdfName, i);
                         }
                     }
                 }
@@ -42,18 +42,18 @@ public class BooleanSearchEngine implements SearchEngine {
         return freqs;
     }
 
-    private void addWordToIndexation(Map.Entry<String, Integer> entry, String pdfName, int page) {
+    private void recordWordToIndexing(Map.Entry<String, Integer> entry, String pdfName, int page) {
         String keyWord = entry.getKey();
-        var singleSearchResult = indexation.getOrDefault(
+        var singleSearchResult = indexingResult.getOrDefault(
                 keyWord, new ArrayList<>());
         singleSearchResult.add(new PageEntry(
                 pdfName, page, entry.getValue()));
-        indexation.put(keyWord, singleSearchResult);
+        indexingResult.put(keyWord, singleSearchResult);
     }
 
     @Override
     public List<PageEntry> search(String word) {
-        var response = indexation.getOrDefault(word, Collections.emptyList());
+        var response = indexingResult.getOrDefault(word, Collections.emptyList());
         response.sort(PageEntry::compareTo);
         return response;
     }

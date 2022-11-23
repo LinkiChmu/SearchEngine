@@ -18,7 +18,7 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            System.out.println("Введите слово для поиска:");
+            System.out.println("Введите слово для поиска:\n");
             String request = scanner.nextLine().trim();
             System.out.println("Вы ввели: " + request);
 
@@ -26,12 +26,11 @@ public class Client {
 
             String response = in.readLine();
 
-            if (response.isEmpty()) {
+            if (response.equals("[]")) {
                 System.out.println("Слово не найдено");
             } else {
                 System.out.println(response);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
