@@ -26,7 +26,7 @@ public class SearchServer {
                      BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-                    String request = in.readLine().toLowerCase().trim();
+                    String [] request = in.readLine().split("(?U)\\W+");
                     System.out.println(request);
 
                     List<PageEntry> response = engine.search(request);
