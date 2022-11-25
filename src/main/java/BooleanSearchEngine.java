@@ -9,10 +9,11 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-    private int size = 7_000;
+    private int size = 6_500;
     private static final int HASH_FACTOR = 2;
     private Map<String, List<PageEntry>> indexingResult = new HashMap<>(size * HASH_FACTOR);
     private Set<String> stopWords;
+    private String stopWordsFile = "stop-ru.txt";
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
         if (pdfsDir.isDirectory()) {
@@ -30,7 +31,7 @@ public class BooleanSearchEngine implements SearchEngine {
                 }
             }
         }
-        loadStopWords("stop-ru.txt");
+        loadStopWords();
     }
 
     private Map<String, Integer> countWordsFrequencyOnPage(String[] words) {
@@ -54,28 +55,31 @@ public class BooleanSearchEngine implements SearchEngine {
         indexingResult.put(keyWord, singleSearchResult);
     }
 
-    private void loadStopWords(String textFile) throws IOException {
-        var stopWordsAsList = Files.readAllLines(Path.of(textFile));
-        stopWords = new HashSet<>(stopWordsAsList);
+    private void loadStopWords() throws IOException {
+        var stopList = Files.readAllLines(Path.of(stopWordsFile));
+        stopWords = new HashSet<>(stopList);
     }
 
-    @Override
-    public List<PageEntry> search(String[] words) {
+    protected List<PageEntry> search(String[] words) {
         Map<PageEntry, Integer> map = new HashMap<>();
         for (var word : words) {
             word = word.toLowerCase();
             if (!stopWords.contains(word)) {
-                var rowResult = indexingResult.getOrDefault(word, Collections.emptyList());
-                for (var entry : rowResult) {
+                var singleWordSearch = search(word);
+                for (PageEntry entry : singleWordSearch) {
                     var newValue = map.getOrDefault(entry, 0) + entry.getCount();
                     map.remove(entry);
-                    entry.setCount(newValue);
-                    map.put(entry, newValue);
+                    map.put(new PageEntry(entry.getPdf(), entry.getPage(), newValue), newValue);
                 }
             }
         }
         var response = new ArrayList<>(map.keySet());
         response.sort(PageEntry::compareTo);
         return response;
-}
+    }
+
+    @Override
+    public List<PageEntry> search(String word) {
+        return indexingResult.getOrDefault(word, Collections.emptyList());
+    }
 }

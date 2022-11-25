@@ -47,7 +47,7 @@ public class PageEntry implements Comparable<PageEntry> {
         return count;
     }
 
-    public void setCount(int count) {
+    protected void setCount(int count) {
         this.count = count;
     }
 
