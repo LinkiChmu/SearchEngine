@@ -1,6 +1,3 @@
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,14 +15,13 @@ public class Client {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            System.out.println("Введите слово для поиска:\n");
+            System.out.println("Введите слова для поиска:\n");
             String request = scanner.nextLine().trim();
             System.out.println("Вы ввели: " + request);
 
             out.println(request);
 
             String response = in.readLine();
-
             if (response.equals("[]")) {
                 System.out.println("Слово не найдено");
             } else {

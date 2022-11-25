@@ -1,7 +1,9 @@
+import java.util.Objects;
+
 public class PageEntry implements Comparable<PageEntry> {
     private final String pdfName;
     private final int page;
-    private final int count;
+    private int count;
 
     public PageEntry(String pdfName, int page, int count) {
         this.pdfName = pdfName;
@@ -9,6 +11,7 @@ public class PageEntry implements Comparable<PageEntry> {
         this.count = count;
     }
 
+    // Method implements comparison for sorting in descending order
     public int compareTo(PageEntry o) {
         if (this.count == o.count) {
             return 0;
@@ -17,6 +20,19 @@ public class PageEntry implements Comparable<PageEntry> {
         } else {
             return -1;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pdfName, page);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        PageEntry p = (PageEntry) obj;
+        return p.page == this.page && this.pdfName.equals(p.pdfName);
     }
 
     public String getPdf() {
@@ -29,6 +45,10 @@ public class PageEntry implements Comparable<PageEntry> {
 
     public int getCount() {
         return count;
+    }
+
+    protected void setCount(int count) {
+        this.count = count;
     }
 
     @Override
