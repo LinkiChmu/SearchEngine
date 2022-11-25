@@ -47,10 +47,6 @@ public class PageEntry implements Comparable<PageEntry> {
         return count;
     }
 
-    protected void setCount(int count) {
-        this.count = count;
-    }
-
     @Override
     public String toString() {
         return "PageEntry{pdf=" + pdfName + ", page=" + page + ", count=" + count + '}';
