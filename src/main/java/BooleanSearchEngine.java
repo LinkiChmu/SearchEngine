@@ -9,13 +9,12 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
-    private int size = 6_500;
-    private static final int HASH_FACTOR = 2;
-    private Map<String, List<PageEntry>> indexingResult = new HashMap<>(size * HASH_FACTOR);
+    private Map<String, List<PageEntry>> indexingResult;
     private Set<String> stopWords;
     private String stopWordsFile = "stop-ru.txt";
 
-    public BooleanSearchEngine(File pdfsDir) throws IOException {
+    public BooleanSearchEngine(File pdfsDir, int indexSize) throws IOException {
+        indexingResult = new HashMap<>(indexSize);
         if (pdfsDir.isDirectory()) {
             for (File pdf : pdfsDir.listFiles()) {
                 var pdfName = pdf.getName();
@@ -35,7 +34,7 @@ public class BooleanSearchEngine implements SearchEngine {
     }
 
     private Map<String, Integer> countWordsFrequencyOnPage(String[] words) {
-        Map<String, Integer> freqs = new HashMap<>(words.length * HASH_FACTOR);
+        Map<String, Integer> freqs = new HashMap<>(words.length);
         for (var word : words) {
             if (word.isEmpty()) {
                 continue;
